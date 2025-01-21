@@ -120,11 +120,11 @@ mape = mean_absolute_percentage_error(actuals, forecast)
 st.metric(label="MAPE (%)", value=f"{mape*100:.2f}")
 
 # Ajout des critères d'accessibilité
-st.markdown("""
-### Critères d'accessibilité appliqués :
-- **Contenu non textuel :** Les graphiques incluent des titres et descriptions.
-- **Utilisation de la couleur :** Les graphiques utilisent des contrastes élevés.
-- **Contraste :** Contrastes suffisants pour le texte et les visuels.
-- **Redimensionnement :** Les textes et graphiques s'adaptent à la taille de l'écran.
-- **Titres clairs :** Chaque section est accompagnée d'un titre descriptif.
-""")
+# st.markdown("""
+# ### Critères d'accessibilité appliqués :
+# - **Contenu non textuel :** Les graphiques incluent des titres et descriptions.
+# - **Utilisation de la couleur :** Les graphiques utilisent des contrastes élevés.
+# - **Contraste :** Contrastes suffisants pour le texte et les visuels.
+# - **Redimensionnement :** Les textes et graphiques s'adaptent à la taille de l'écran.
+# - **Titres clairs :** Chaque section est accompagnée d'un titre descriptif.
+# """)
