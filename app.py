@@ -51,7 +51,7 @@ Les graphiques respectent les critères d'accessibilité WCAG, avec des textes l
 item_ids = ts_df.item_ids.unique()
 selected_item = st.selectbox("Sélectionnez un magasin :", item_ids)
 
-# Prévisions temporelles
+# Prévisions temporelles (Graphique interactif 1)
 st.header("Prévisions temporelles")
 st.markdown(f"Prévisions pour le magasin sélectionné : **{selected_item}**")
 predictions = all_predictions[all_predictions['item_id'] == selected_item]
@@ -98,16 +98,33 @@ plt.tight_layout()
 # Afficher dans Streamlit
 st.pyplot(fig)
 
-# Décomposition saisonnière
-st.header("Décomposition saisonnière")
-st.markdown("Analyse des composantes saisonnières, de tendance et des résidus.")
+# Analyse de la saisonnalité (Graphique interactif 2)
+st.header("Analyse de la saisonnalité")
+st.markdown("Explorez les composantes : Observée, Tendance, Saisonnière ou Résidus.")
+
+# Décomposer les données
 selected_data = ts_df.loc[selected_item]["target"]
 decomposed = seasonal_decompose(selected_data, period=52)
-fig, axes = plt.subplots(4, 1, figsize=(12, 10))
-decomposed.observed.plot(ax=axes[0], title="Observé")
-decomposed.trend.plot(ax=axes[1], title="Tendance")
-decomposed.seasonal.plot(ax=axes[2], title="Saisonnalité")
-decomposed.resid.plot(ax=axes[3], title="Résidus")
+
+# Options pour les composantes
+component = st.selectbox(
+    "Choisissez une composante à explorer :",
+    ["Observée", "Tendance", "Saisonnière", "Résidus"]
+)
+
+# Tracer la composante sélectionnée
+fig, ax = plt.subplots(figsize=(12, 6))
+if component == "Observée":
+    ax.plot(decomposed.observed, label="Observée")
+elif component == "Tendance":
+    ax.plot(decomposed.trend, label="Tendance", color="green")
+elif component == "Saisonnière":
+    ax.plot(decomposed.seasonal, label="Saisonnière", color="orange")
+elif component == "Résidus":
+    ax.plot(decomposed.resid, label="Résidus", color="red")
+
+ax.set_title(f"Composante : {component}")
+ax.legend()
 plt.tight_layout()
 st.pyplot(fig)
 
