@@ -159,7 +159,7 @@ nbformat==5.10.4
 nest-asyncio==1.6.0
 networkx==3.4.2
 nlpaug==1.1.11
-nltk==3.8.1
+nltk==3.9
 notebook==7.3.2
 notebook_shim==0.2.4
 numba==0.60.0
