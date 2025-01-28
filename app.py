@@ -167,6 +167,17 @@ st.pyplot(fig)
 
 # Calcul du MAPE
 st.header("Performance des prévisions")
+st.subheader("Qu'est-ce que le MAPE ?")
+
+st.markdown(
+    """
+    **Le MAPE (Mean Absolute Percentage Error)** est une mesure utilisée pour évaluer la précision des prévisions. 
+    Il représente l'erreur moyenne entre les valeurs réelles et les prévisions, exprimée en pourcentage.
+    
+    - Un MAPE proche de **0%** signifie que la prévision est très précise.
+    - Un MAPE élevé indique que la prévision est éloignée des valeurs réelles.
+    """
+)
 st.markdown("**MAPE (Mean Absolute Percentage Error)** pour évaluer la précision des prévisions.")
 actuals = ts_df.loc[selected_item]["target"][-40:]
 forecast = predictions["mean"]
