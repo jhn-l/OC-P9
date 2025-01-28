@@ -11,21 +11,36 @@ st.set_page_config(page_title="Dashboard de prévisions", layout="wide")
 # Charger les données
 @st.cache_data
 def load_data(file_path="clean_data.csv"):
-    df = pd.read_csv(file_path)
+    # Convertir les colonnes nécessaires
     df['timestamp'] = pd.to_datetime(df['Date'], errors='coerce')
     df['target'] = pd.to_numeric(df['Weekly_Sales'], errors='coerce')
     df['item_id'] = df['Store'] if 'Store' in df.columns else 1
-    df = df[['item_id', 'timestamp', 'target']].dropna()
+
+    # Garder les colonnes nécessaires (avec covariates)
+    covariates = ['IsHoliday', 'Super_Bowl', 'Labor_Day', 'Thanksgiving', 'Christmas']
+    df = df[['item_id', 'timestamp', 'target'] + covariates].dropna()
+
+    # Trier les données
     df = df.sort_values(by=['item_id', 'timestamp']).reset_index(drop=True)
-    df = df.groupby(['item_id', 'timestamp'], as_index=False).agg({'target': 'mean'})
+
+    # Éliminer les doublons dans `timestamp` par `item_id`
+    df = df.groupby(['item_id', 'timestamp'], as_index=False).mean()
+
+    # Rééchantillonnage (fréquence hebdomadaire)
     freq = 'W'
     regular_data = []
     for item_id, group in df.groupby('item_id'):
-        group = group.set_index('timestamp').asfreq(freq, method='pad')
-        group['item_id'] = item_id
+        group = group.set_index('timestamp').asfreq(freq, method='pad')  # Remplir les valeurs manquantes
+        group['item_id'] = item_id  # Ajouter l'ID
         regular_data.append(group.reset_index())
+
+    # Combiner les données rééchantillonnées
     df_regular = pd.concat(regular_data, ignore_index=True)
+
+    df_regular[covariates] = df_regular[covariates].apply(lambda x: x.astype(int).astype(object)) # Convertir en type catégorique
+
     ts_df = TimeSeriesDataFrame.from_data_frame(df_regular, id_column="item_id", timestamp_column="timestamp")
+
     return ts_df
 
 @st.cache_data
@@ -60,11 +75,11 @@ predictions = all_predictions[all_predictions['item_id'] == selected_item]
 fig, ax = plt.subplots(figsize=(12, 6))
 
 # Tracer les données observées
-ax.plot(
-    ts_df.loc[selected_item].index,  # Index pour les dates
-    ts_df.loc[selected_item]["target"], 
-    label="Observé"
-)
+# ax.plot(
+#     ts_df.loc[selected_item].index,  # Index pour les dates
+#     ts_df.loc[selected_item]["target"], 
+#     label="Observé"
+# )
 
 # Tracer les prévisions
 ax.plot(
