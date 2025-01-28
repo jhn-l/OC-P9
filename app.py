@@ -11,6 +11,9 @@ st.set_page_config(page_title="Dashboard de prévisions", layout="wide")
 # Charger les données
 @st.cache_data
 def load_data(file_path="clean_data.csv"):
+    # Charger les données
+    df = pd.read_csv(file_path)
+    
     # Convertir les colonnes nécessaires
     df['timestamp'] = pd.to_datetime(df['Date'], errors='coerce')
     df['target'] = pd.to_numeric(df['Weekly_Sales'], errors='coerce')
@@ -74,12 +77,12 @@ predictions = all_predictions[all_predictions['item_id'] == selected_item]
 # Tracer les prévisions
 fig, ax = plt.subplots(figsize=(12, 6))
 
-# Tracer les données observées
-# ax.plot(
-#     ts_df.loc[selected_item].index,  # Index pour les dates
-#     ts_df.loc[selected_item]["target"], 
-#     label="Observé"
-# )
+#Tracer les données observées
+ax.plot(
+    ts_df.loc[selected_item].index,  # Index pour les dates
+    ts_df.loc[selected_item]["target"], 
+    label="Observé"
+)
 
 # Tracer les prévisions
 ax.plot(
@@ -115,7 +118,7 @@ st.pyplot(fig)
 
 # Analyse de la saisonnalité (Graphique interactif 2)
 st.header("Analyse de la saisonnalité")
-st.markdown("Explorez les composantes : Observée, Tendance, Saisonnière ou Résidus.")
+st.markdown("Explorez les composantes : Tendance, Saisonnière ou Résidus.")
 
 # Décomposer les données
 selected_data = ts_df.loc[selected_item]["target"]
@@ -124,14 +127,33 @@ decomposed = seasonal_decompose(selected_data, period=52)
 # Options pour les composantes
 component = st.selectbox(
     "Choisissez une composante à explorer :",
-    ["Observée", "Tendance", "Saisonnière", "Résidus"]
+    ["Tendance", "Saisonnière", "Résidus"]
 )
+
+# Explications pour chaque composante
+component_explanations = {
+    "Tendance": (
+        "La composante Tendance représente l'évolution générale des ventes sur une longue période. "
+        "Elle permet d'identifier si les ventes augmentent, diminuent ou restent stables dans le temps."
+    ),
+    "Saisonnière": (
+        "La composante Saisonnière capture les variations périodiques répétées, comme les effets "
+        "des saisons ou des événements récurrents (par exemple, Noël ou les vacances scolaires). "
+        "Elle est utile pour comprendre les schémas cycliques."
+    ),
+    "Résidus": (
+        "La composante Résidus représente les variations imprévisibles qui ne peuvent pas être expliquées "
+        "par la tendance ou la saisonnalité. Elle reflète les fluctuations dues à des événements aléatoires ou exceptionnels."
+    ),
+}
+
+# Afficher l'explication de la composante sélectionnée
+st.markdown(f"**À quoi sert cette composante ?** {component_explanations[component]}")
+
 
 # Tracer la composante sélectionnée
 fig, ax = plt.subplots(figsize=(12, 6))
-if component == "Observée":
-    ax.plot(decomposed.observed, label="Observée")
-elif component == "Tendance":
+if component == "Tendance":
     ax.plot(decomposed.trend, label="Tendance", color="green")
 elif component == "Saisonnière":
     ax.plot(decomposed.seasonal, label="Saisonnière", color="orange")
