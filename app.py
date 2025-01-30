@@ -106,6 +106,16 @@ start_date = ts_df.loc[selected_item].index.min()
 end_date = ts_df.loc[selected_item].index.max()
 ax.set_xlim([start_date, end_date])
 
+st.write("Voici les valeurs prédites avec leurs intervalles de confiance.")
+
+with st.expander("ℹ️ Qu'est-ce qu'un intervalle de confiance ?"):
+    st.write(
+        "Un intervalle de confiance représente la plage dans laquelle la vraie valeur d'une prédiction a une forte "
+        "probabilité de se situer. Il est calculé en tenant compte de l'incertitude du modèle. "
+        "Par exemple, un intervalle de confiance à 95 % signifie que si l'on répétait l'expérience plusieurs "
+        "fois, la vraie valeur se situerait dans cet intervalle 95 % du temps."
+    )
+    
 # Ajouter des titres et une légende
 ax.set_title(f"Prévisions pour le magasin {selected_item}")
 ax.legend()
@@ -150,7 +160,7 @@ component_explanations = {
 }
 
 # Afficher l'explication de la composante sélectionnée
-st.markdown(f"**À quoi sert cette composante ?** {component_explanations[component]}")
+st.markdown(f"**À quoi sert cette composante ?** '\n' { component_explanations[component]}")
 
 
 # Tracer la composante sélectionnée
