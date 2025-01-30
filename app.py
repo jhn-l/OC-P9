@@ -61,8 +61,6 @@ Bienvenue sur le tableau de bord interactif ! Ici, vous pouvez :
 1. Explorer les prévisions temporelles pour différents magasins.
 2. Analyser la décomposition saisonnière.
 3. Évaluer la précision des prévisions avec le MAPE.
-
-Les graphiques respectent les critères d'accessibilité WCAG, avec des textes lisibles et des contrastes adaptés.
 """)
 
 # Sélection d'un magasin
@@ -143,8 +141,12 @@ component_explanations = {
     ),
     "Résidus": (
         "La composante Résidus représente les variations imprévisibles qui ne peuvent pas être expliquées "
-        "par la tendance ou la saisonnalité. Elle reflète les fluctuations dues à des événements aléatoires ou exceptionnels."
-    ),
+        "par la tendance ou la saisonnalité. Elle reflète les fluctuations dues à des événements aléatoires ou exceptionnels. "
+        "Un résidu proche de 0 indique que le modèle explique bien les variations des données. "
+        "Un résidu positif signifie que le modèle a sous-estimé la valeur réelle, tandis qu'un résidu négatif "
+        "indique une surestimation. Des résidus élevés, qu'ils soient positifs ou négatifs, peuvent signaler des anomalies "
+        "ou des phénomènes non pris en compte par le modèle."
+    ),  
 }
 
 # Afficher l'explication de la composante sélectionnée
@@ -183,13 +185,3 @@ actuals = ts_df.loc[selected_item]["target"][-40:]
 forecast = predictions["mean"]
 mape = mean_absolute_percentage_error(actuals, forecast)
 st.metric(label="MAPE (%)", value=f"{mape*100:.2f}")
-
-# Ajout des critères d'accessibilité
-# st.markdown("""
-# ### Critères d'accessibilité appliqués :
-# - **Contenu non textuel :** Les graphiques incluent des titres et descriptions.
-# - **Utilisation de la couleur :** Les graphiques utilisent des contrastes élevés.
-# - **Contraste :** Contrastes suffisants pour le texte et les visuels.
-# - **Redimensionnement :** Les textes et graphiques s'adaptent à la taille de l'écran.
-# - **Titres clairs :** Chaque section est accompagnée d'un titre descriptif.
-# """)
