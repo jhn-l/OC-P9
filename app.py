@@ -160,7 +160,8 @@ component_explanations = {
 }
 
 # Afficher l'explication de la composante sélectionnée
-st.markdown(f"**À quoi sert cette composante ?** \n { component_explanations[component]}")
+st.markdown(f"**À quoi sert cette composante ?**")
+st.write(f"{ component_explanations[component]}")
 
 
 # Tracer la composante sélectionnée
